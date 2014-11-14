@@ -1,11 +1,11 @@
-package net.metadark.pong;
+package net.metadark.pong.client;
 
-import net.metadark.pong.Paddle.Side;
+import net.metadark.pong.shared.Paddle.Side;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -13,13 +13,14 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class Pong extends ApplicationAdapter {
 	
+	private Input inputProcessor;
 	private OrthographicCamera camera;
 	private Music music;
 	private ShapeRenderer shapeRenderer;
 	
-	private Ball ball;
-	private Paddle leftPaddle;
-	private Paddle rightPaddle;
+	private ClientBall ball;
+	private ClientPaddle leftPaddle;
+	private ClientPaddle rightPaddle;
 	
 	@Override
 	public void create () {
@@ -34,53 +35,45 @@ public class Pong extends ApplicationAdapter {
 		music.setVolume(0.3f);
 		music.play();
 		
+		Sound bounce = Gdx.audio.newSound(Gdx.files.internal("bounce.ogg"));
+		
 		// Setup the shape render and the objects
 		shapeRenderer = new ShapeRenderer();
-		leftPaddle = new Paddle(camera, Side.LEFT);
-		rightPaddle = new Paddle(camera, Side.RIGHT);
-		ball = new Ball(camera);
+		leftPaddle = new ClientPaddle(camera, Side.LEFT);
+		rightPaddle = new ClientPaddle(camera, Side.RIGHT);
+		ball = new ClientBall(camera, leftPaddle, rightPaddle, bounce);
+		
+		// Handle player input
+		inputProcessor = new Input(leftPaddle, rightPaddle);
+		Gdx.input.setInputProcessor(inputProcessor);
 		
 	}
 
 	@Override
 	public void render () {
 		
-		// Handle keyboard input
-		if (Gdx.input.isKeyPressed(Keys.UP)) {
-			leftPaddle.moveUp();
-		} else if (Gdx.input.isKeyPressed(Keys.DOWN)) {
-			leftPaddle.moveDown();
-		} else if (Gdx.input.isKeyPressed(Keys.LEFT)) {
-			rightPaddle.moveUp();
-		} else if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-			rightPaddle.moveDown();
-		}
-		
-		// TODO: Handle collisions
-		if (ball.overlaps(leftPaddle) || ball.overlaps(rightPaddle)) {
-			ball.velocityX = -ball.velocityX;
-			ball.velocityY = 1;
-		}
-		
 		// Reset display
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		camera.update();
+//		camera.update();
 		
-		// Draw shapes
+		// Start drawing shapes
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.begin(ShapeType.Filled);
 		
-		// Draw game separator
+		// Draw separator
 		shapeRenderer.setColor(0.5f, 0.5f, 0.5f, 1);
-		shapeRenderer.rect((camera.viewportWidth - 10) / 2, 0, 10, camera.viewportHeight);
+		for (int i = 0; i < 24; i++) {
+			shapeRenderer.rect((camera.viewportWidth - 10) / 2, i * 20, 5, 10);
+		}
 		
 		// Draw ball and paddles
 		ball.render(shapeRenderer);
 		leftPaddle.render(shapeRenderer);
 		rightPaddle.render(shapeRenderer);
 		
+		// Stop drawing shapes
 		shapeRenderer.end();
 		
 	}
