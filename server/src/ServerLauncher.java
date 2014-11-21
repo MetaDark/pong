@@ -1,7 +1,9 @@
+import net.metadark.pong.server.PongServer;
+
 class ServerLauncher {
 
 	public static void main(String[] args) {
-		System.out.println("Server");
+		new PongServer();
 	}
 
 }

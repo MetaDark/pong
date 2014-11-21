@@ -1,7 +1,6 @@
 package net.metadark.pong.server;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.Protocol;
@@ -9,28 +8,31 @@ import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 
-public class PongServer implements Runnable {
+public class PongServer extends Thread {
+	
+	private static int DEFAULT_PORT = 5436;
+	private int port;
+	
+	private ArrayList<Socket> clients = new ArrayList<Socket>();
 
-	private static final int DEFAULT_PORT = 5436;
+	public PongServer() {
+		this(DEFAULT_PORT);
+	}
+
+	public PongServer(int port) {
+		this.port = port;
+	}
 
 	@Override
 	public void run() {
 		ServerSocketHints serverSocketHint = new ServerSocketHints();
-		serverSocketHint.acceptTimeout = 0;
-
-		ServerSocket serverSocket = Gdx.net.newServerSocket(Protocol.TCP, DEFAULT_PORT,
-				serverSocketHint);
-
+		serverSocketHint.acceptTimeout = 1000;
+		
+		ServerSocket server = Gdx.net.newServerSocket(Protocol.TCP, port, serverSocketHint);
+		
 		while (true) {
-			Socket socket = serverSocket.accept(null);
-			BufferedReader buffer = new BufferedReader(new InputStreamReader(
-					socket.getInputStream()));
-
-			// try {
-			// labelMessage.setText(buffer.readLine());
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
+			Socket client = server.accept(null);
+			System.out.println("Client connected: " + client.getRemoteAddress());
 		}
 	}
 }
