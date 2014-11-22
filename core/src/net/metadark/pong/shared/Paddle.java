@@ -11,11 +11,8 @@ public class Paddle extends Rectangle {
 	private Camera camera;
 	
 	private float speed;
-	
 	private boolean moveUp;
 	private boolean moveDown;
-	private boolean moveLeft;
-	private boolean moveRight;
 	
 	public enum Side {
 		LEFT,
@@ -53,24 +50,13 @@ public class Paddle extends Rectangle {
 	 * 
 	 * @param t
 	 */
+	
 	public void moveDown(boolean toggle) {
 		moveDown = toggle;
 	}
 	
-	public void moveLeft(boolean toggle) {
-		moveLeft = toggle;
-	}
-	
-	public void moveRight(boolean toggle) {
-		moveRight = toggle;
-	}
-	
 	public void update() {
 		updatePosition();
-	}
-	
-	public void pathIntersects(float x1, float x2, float y1, float y2) {
-		
 	}
 	
 	/**
@@ -83,14 +69,6 @@ public class Paddle extends Rectangle {
 		
 		if (moveDown) {
 			y -= speed * 600 * Gdx.graphics.getDeltaTime();
-		}
-		
-		if (moveLeft) {
-			x -= speed * 600 * Gdx.graphics.getDeltaTime();
-		}
-		
-		if (moveRight) {
-			x += speed * 600 * Gdx.graphics.getDeltaTime();
 		}
 		
 		// Bound the paddle to the camera viewport

@@ -5,16 +5,12 @@ import java.io.IOException;
 
 import com.badlogic.gdx.net.Socket;
 
-
 public class ClientConnection extends Thread {
 	
-	PongServer server;
 	Socket client;
 	
-	public ClientConnection(PongServer server, Socket client) {
-		this.server = server;
+	public ClientConnection(Socket client) {
 		this.client = client;
-		this.start();
 	}
 	
 	@Override

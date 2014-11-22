@@ -48,10 +48,11 @@ public class Pong extends ApplicationAdapter {
 		inputProcessor = new Input(leftPaddle, rightPaddle);
 		Gdx.input.setInputProcessor(inputProcessor);
 
-		// Start the client communication
+		// Start the server
 		PongServer server = new PongServer();
 		server.start();
 		
+		// Start the client
 		PongClient client = new PongClient();
 		client.start();
 

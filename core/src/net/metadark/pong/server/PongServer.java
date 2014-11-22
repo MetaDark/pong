@@ -25,12 +25,19 @@ public class PongServer extends Thread {
 
 	@Override
 	public void run() {
-		ServerSocket server = Gdx.net.newServerSocket(Protocol.TCP, port, null);
+		ServerSocketHints socketHint = new ServerSocketHints();
+		socketHint.acceptTimeout = 0;
+		
+		ServerSocket serverSocket = Gdx.net.newServerSocket(Protocol.TCP, port, socketHint);
 		
 		while (true) {
-			Socket client = server.accept(null);
-			System.out.println("Client connected: " + client.getRemoteAddress());
-			clients.add(new ClientConnection(this, client));
+			Socket clientSocket = serverSocket.accept(null);
+			System.out.println("Client connected: " + clientSocket.getRemoteAddress());
+			
+			ClientConnection clientConnection = new ClientConnection(clientSocket);
+			clientConnection.start();
+			
+			clients.add(clientConnection);
 		}
 	}
 }
