@@ -51,7 +51,7 @@ public class Pong extends ApplicationAdapter {
 		// Start the server
 		PongServer server = new PongServer();
 		server.start();
-		
+
 		// Start the client
 		PongClient client = new PongClient();
 		client.start();
