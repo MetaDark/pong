@@ -1,6 +1,5 @@
 package net.metadark.pong.client;
 
-import net.metadark.pong.server.PongServer;
 import net.metadark.pong.shared.Paddle.Side;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -47,10 +46,6 @@ public class Pong extends ApplicationAdapter {
 		// Handle player input
 		inputProcessor = new Input(leftPaddle, rightPaddle);
 		Gdx.input.setInputProcessor(inputProcessor);
-
-		// Start the server
-		PongServer server = new PongServer();
-		server.start();
 
 		// Start the client
 		PongClient client = new PongClient();
