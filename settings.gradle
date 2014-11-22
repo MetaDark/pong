@@ -1,1 +1,4 @@
-include 'core', 'desktop', 'server'
+include 'core', 'client', 'server', 'desktop-client', 'desktop-server'
+
+project(":desktop-client").projectDir = file("desktop/client")
+project(":desktop-server").projectDir = file("desktop/server")
