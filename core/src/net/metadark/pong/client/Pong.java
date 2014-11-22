@@ -52,7 +52,7 @@ public class Pong extends ApplicationAdapter {
 		PongServer server = new PongServer();
 		server.start();
 		
-		PongClient client = new PongClient();
+		PongClient client = new PongClient("192.168.43.32");
 		client.start();
 
 	}
