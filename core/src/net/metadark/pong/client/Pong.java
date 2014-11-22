@@ -54,8 +54,6 @@ public class Pong extends ApplicationAdapter {
 		
 		PongClient client = new PongClient();
 		client.start();
-		
-		System.out.println("I have started the thread");
 
 	}
 

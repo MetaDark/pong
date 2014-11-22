@@ -13,7 +13,7 @@ public class PongServer extends Thread {
 	private static int DEFAULT_PORT = 5436;
 	private int port;
 	
-	private ArrayList<Socket> clients = new ArrayList<Socket>();
+	private ArrayList<ClientConnection> clients = new ArrayList<ClientConnection>();
 
 	public PongServer() {
 		this(DEFAULT_PORT);
@@ -25,14 +25,12 @@ public class PongServer extends Thread {
 
 	@Override
 	public void run() {
-		ServerSocketHints serverSocketHint = new ServerSocketHints();
-		serverSocketHint.acceptTimeout = 1000;
-		
-		ServerSocket server = Gdx.net.newServerSocket(Protocol.TCP, port, serverSocketHint);
+		ServerSocket server = Gdx.net.newServerSocket(Protocol.TCP, port, null);
 		
 		while (true) {
 			Socket client = server.accept(null);
 			System.out.println("Client connected: " + client.getRemoteAddress());
+			clients.add(new ClientConnection(this, client));
 		}
 	}
 }

@@ -35,8 +35,8 @@ public class PongClient extends Thread {
 		Socket socket = Gdx.net.newClientSocket(Protocol.TCP, host, port, socketHint);
 
 		while (true) {
-			System.out.println("Client in the loop");
 			DataInputStream input = new DataInputStream(socket.getInputStream());
+			
 			try {
 				System.out.println(input.readDouble());
 			} catch (IOException e) {
