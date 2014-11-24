@@ -1,34 +1,24 @@
 package net.metadark.pong.client;
 
-import net.metadark.pong.shared.Paddle;
-
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Keys;
 
 public class Input extends InputAdapter {
 	
-	private Paddle playerPaddle;
-	private Paddle opponentPaddle;
+	private Pong pong;
 	
-	public Input(Paddle playerPaddle, Paddle opponentPaddle) {
-		this.playerPaddle = playerPaddle;
-		this.opponentPaddle = opponentPaddle;
+	public Input(Pong pong) {
+		this.pong = pong;
 	}
 	
 	@Override
 	public boolean keyDown(int keycode) {
 		switch (keycode) {
 		case Keys.UP:
-			playerPaddle.moveUp(true);
+			pong.leftPaddle.moveUp(true);
 			break;
 		case Keys.DOWN:
-			playerPaddle.moveDown(true);
-			break;
-		case Keys.LEFT:
-			opponentPaddle.moveUp(true);
-			break;
-		case Keys.RIGHT:
-			opponentPaddle.moveDown(true);
+			pong.leftPaddle.moveDown(true);
 			break;
 		}
 		
@@ -39,16 +29,10 @@ public class Input extends InputAdapter {
 	public boolean keyUp(int keycode) {
 		switch (keycode) {
 		case Keys.UP:
-			playerPaddle.moveUp(false);
+			pong.leftPaddle.moveUp(false);
 			break;
 		case Keys.DOWN:
-			playerPaddle.moveDown(false);
-			break;
-		case Keys.LEFT:
-			opponentPaddle.moveUp(false);
-			break;
-		case Keys.RIGHT:
-			opponentPaddle.moveDown(false);
+			pong.leftPaddle.moveDown(false);
 			break;
 		}
 		

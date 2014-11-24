@@ -40,7 +40,7 @@ public class Paddle extends Rectangle {
 	 * 
 	 * @param t toggle
 	 */
-	public void moveUp(boolean toggle) {
+	public void moveUpPure(boolean toggle) {
 		moveUp = toggle;
 	}
 	
@@ -51,7 +51,7 @@ public class Paddle extends Rectangle {
 	 * @param t
 	 */
 	
-	public void moveDown(boolean toggle) {
+	public void moveDownPure(boolean toggle) {
 		moveDown = toggle;
 	}
 	

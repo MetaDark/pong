@@ -21,6 +21,7 @@ public class PongServer extends Thread {
 
 	public PongServer(int port) {
 		this.port = port;
+		start();
 	}
 
 	@Override
@@ -34,10 +35,28 @@ public class PongServer extends Thread {
 			Socket clientSocket = serverSocket.accept(null);
 			System.out.println("Client connected: " + clientSocket.getRemoteAddress());
 			
-			ClientConnection clientConnection = new ClientConnection(clientSocket);
-			clientConnection.start();
-			
+			ClientConnection clientConnection = new ClientConnection(this, clientSocket);
 			clients.add(clientConnection);
 		}
+	}
+	
+	public void moveUp(ClientConnection origin, boolean toggle) {
+		for (ClientConnection client : clients) {
+			if (client != origin) {
+				client.moveUp(toggle);
+			}
+		}
+	}
+	
+	public void moveDown(ClientConnection origin, boolean toggle) {
+		for (ClientConnection client : clients) {
+			if (client != origin) {
+				client.moveDown(toggle);
+			}
+		}
+	}
+	
+	public void closeConnection(ClientConnection clientConnection) {
+		clients.remove(clientConnection);
 	}
 }

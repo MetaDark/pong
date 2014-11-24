@@ -6,8 +6,7 @@ public class Pong extends ApplicationAdapter {
 
 	@Override
 	public void create () {
-		PongServer server = new PongServer();
-		server.start();
+		new PongServer();
 	}
 
 }

@@ -19,8 +19,10 @@ public class Pong extends ApplicationAdapter {
 	private ShapeRenderer shapeRenderer;
 
 	private ClientBall ball;
-	private ClientPaddle leftPaddle;
-	private ClientPaddle rightPaddle;
+	
+	// FIX THIS LATER
+	public ClientPaddle leftPaddle;
+	public ClientPaddle rightPaddle;
 
 	@Override
 	public void create () {
@@ -37,19 +39,18 @@ public class Pong extends ApplicationAdapter {
 
 		Sound bounce = Gdx.audio.newSound(Gdx.files.internal("bounce.ogg"));
 
+		// Start the client
+		PongClient client = new PongClient(this);
+		
 		// Setup the shape render and the objects
 		shapeRenderer = new ShapeRenderer();
-		leftPaddle = new ClientPaddle(camera, Side.LEFT);
-		rightPaddle = new ClientPaddle(camera, Side.RIGHT);
+		leftPaddle = new ClientPaddle(client, camera, Side.LEFT);
+		rightPaddle = new ClientPaddle(client, camera, Side.RIGHT);
 		ball = new ClientBall(camera, leftPaddle, rightPaddle, bounce);
 
 		// Handle player input
-		inputProcessor = new Input(leftPaddle, rightPaddle);
+		inputProcessor = new Input(this);
 		Gdx.input.setInputProcessor(inputProcessor);
-
-		// Start the client
-		PongClient client = new PongClient();
-		client.start();
 
 	}
 
