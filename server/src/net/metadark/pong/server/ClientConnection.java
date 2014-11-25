@@ -10,6 +10,7 @@ public class ClientConnection extends Thread {
 	
 	private static final int MOVE_UP = 0;
 	private static final int MOVE_DOWN = 1;
+	private static final int UPDATE_BALL = 2;
 	
 	PongServer server;
 	DataOutputStream output;
@@ -38,6 +39,9 @@ public class ClientConnection extends Thread {
 					break;
 				case MOVE_DOWN:
 					server.moveDown(this, input.readBoolean());
+					break;
+				case UPDATE_BALL:
+					System.out.println("Do the ball thing");
 					break;
 				default:
 					System.out.println("Bad message");
@@ -79,5 +83,14 @@ public class ClientConnection extends Thread {
 			close();
 		}
 	}
+	
+//	public void updateBall() {
+//		try {
+//			output.writeInt(MOVE_DOWN);
+//			output.writeBoolean(toggle);
+//		} catch (IOException e) {
+//			close();
+//		}
+//	}
 
 }

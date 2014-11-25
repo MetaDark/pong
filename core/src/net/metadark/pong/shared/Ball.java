@@ -12,7 +12,7 @@ public class Ball extends Rectangle {
 	private static final long serialVersionUID = 1L;
 	
 	private Sound bounce;
-	Random generator = new Random();
+	private Random generator = new Random();
 	
 	private Camera camera;
 	private Paddle leftPaddle;

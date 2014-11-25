@@ -15,10 +15,10 @@ public class Input extends InputAdapter {
 	public boolean keyDown(int keycode) {
 		switch (keycode) {
 		case Keys.UP:
-			pong.leftPaddle.moveUp(true);
+			pong.getLeftPaddle().moveUp(true);
 			break;
 		case Keys.DOWN:
-			pong.leftPaddle.moveDown(true);
+			pong.getLeftPaddle().moveDown(true);
 			break;
 		}
 		
@@ -29,10 +29,10 @@ public class Input extends InputAdapter {
 	public boolean keyUp(int keycode) {
 		switch (keycode) {
 		case Keys.UP:
-			pong.leftPaddle.moveUp(false);
+			pong.getLeftPaddle().moveUp(false);
 			break;
 		case Keys.DOWN:
-			pong.leftPaddle.moveDown(false);
+			pong.getLeftPaddle().moveDown(false);
 			break;
 		}
 		

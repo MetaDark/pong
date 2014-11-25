@@ -9,7 +9,7 @@ public class ClientPaddle extends Paddle {
 
 	private static final long serialVersionUID = 1L;
 	
-	PongClient client;
+	private PongClient client;
 
 	public ClientPaddle(PongClient client, Camera camera, Side side) {
 		super(camera, side);

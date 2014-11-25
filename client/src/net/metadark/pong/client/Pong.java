@@ -19,10 +19,8 @@ public class Pong extends ApplicationAdapter {
 	private ShapeRenderer shapeRenderer;
 
 	private ClientBall ball;
-	
-	// FIX THIS LATER
-	public ClientPaddle leftPaddle;
-	public ClientPaddle rightPaddle;
+	private ClientPaddle leftPaddle;
+	private ClientPaddle rightPaddle;
 
 	@Override
 	public void create () {
@@ -81,6 +79,18 @@ public class Pong extends ApplicationAdapter {
 		// Stop drawing shapes
 		shapeRenderer.end();
 
+	}
+	
+	public ClientBall getBall() {
+		return ball;
+	}
+
+	public ClientPaddle getLeftPaddle() {
+		return leftPaddle;
+	}
+
+	public ClientPaddle getRightPaddle() {
+		return rightPaddle;
 	}
 
 }
