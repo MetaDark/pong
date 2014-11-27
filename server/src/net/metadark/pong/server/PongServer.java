@@ -10,29 +10,50 @@ import com.badlogic.gdx.net.Socket;
 
 public class PongServer extends Thread {
 
+	/**
+	 * The default port to host on
+	 */
 	private static int DEFAULT_PORT = 5436;
-	private int port;
+	
+	/**
+	 * The socket used to accept new clients
+	 */
+	private ServerSocket socket;
 
+	/**
+	 * A List of unmatched clients
+	 */
 	private ArrayList<ClientConnection> clients = new ArrayList<ClientConnection>();
 
+	/**
+	 * Create a new Pong server on the default port
+	 */
 	public PongServer() {
 		this(DEFAULT_PORT);
 	}
 
+	/**
+	 * Create a new Pong server on a specific port
+	 * @param port
+	 */
 	public PongServer(int port) {
-		this.port = port;
+		ServerSocketHints socketHint = new ServerSocketHints();
+		socketHint.acceptTimeout = 0;
+		
+		// Create the server socket
+		socket = Gdx.net.newServerSocket(Protocol.TCP, port, socketHint);
+		
+		// Start listening for new clients
 		start();
 	}
 
+	/**
+	 * Wait to clients to connect to the server
+	 */
 	@Override
 	public void run() {
-		ServerSocketHints socketHint = new ServerSocketHints();
-		socketHint.acceptTimeout = 0;
-
-		ServerSocket serverSocket = Gdx.net.newServerSocket(Protocol.TCP, port, socketHint);
-
 		while (true) {
-			Socket clientSocket = serverSocket.accept(null);
+			Socket clientSocket = socket.accept(null);
 			System.out.println("Client connected: " + clientSocket.getRemoteAddress());
 
 			ClientConnection clientConnection = new ClientConnection(this, clientSocket);
@@ -40,6 +61,11 @@ public class PongServer extends Thread {
 		}
 	}
 
+	/**
+	 * Broadcast a paddle down message to all players
+	 * @param origin The client that moved
+	 * @param toggle Start/stop movement
+	 */
 	public void moveUp(ClientConnection origin, boolean toggle) {
 		for (ClientConnection client : clients) {
 			if (client != origin) {
@@ -48,6 +74,11 @@ public class PongServer extends Thread {
 		}
 	}
 
+	/**
+	 * Broadcast a paddle up message to all players
+	 * @param origin The client that moved
+	 * @param toggle Start/stop movement
+	 */
 	public void moveDown(ClientConnection origin, boolean toggle) {
 		for (ClientConnection client : clients) {
 			if (client != origin) {
