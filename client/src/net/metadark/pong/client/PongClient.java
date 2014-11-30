@@ -4,6 +4,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import net.metadark.pong.client.screens.GameScreen;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.Socket;
@@ -18,22 +20,22 @@ public class PongClient extends Thread {
 	private static final int MOVE_DOWN = 1;
 	private static final int BALL = 2;
 	
-	private Pong pong;
+	private GameScreen game;
 	private DataOutputStream output;
 	private DataInputStream input;
 
 	private volatile boolean running;
 
-	public PongClient(Pong pong) {
-		this(pong, DEFAULT_HOST, DEFAULT_PORT);
+	public PongClient(GameScreen game) {
+		this(game, DEFAULT_HOST, DEFAULT_PORT);
 	}
 
-	public PongClient(Pong pong, String host) {
-		this(pong, host, DEFAULT_PORT);
+	public PongClient(GameScreen game, String host) {
+		this(game, host, DEFAULT_PORT);
 	}
 
-	public PongClient(Pong pong, String host, int port) {
-		this.pong = pong;
+	public PongClient(GameScreen game, String host, int port) {
+		this.game = game;
 
 		SocketHints socketHint = new SocketHints();
 		socketHint.connectTimeout = 1000;
@@ -54,10 +56,10 @@ public class PongClient extends Thread {
 				int type = input.readInt();
 				switch (type) {
 				case MOVE_UP:
-					pong.getRightPaddle().moveUpPure(input.readBoolean());
+					game.getRightPaddle().moveUpPure(input.readBoolean());
 					break;
 				case MOVE_DOWN:
-					pong.getRightPaddle().moveDownPure(input.readBoolean());
+					game.getRightPaddle().moveDownPure(input.readBoolean());
 					break;
 				case BALL:
 					System.out.println("Do the ball thing");
