@@ -1,4 +1,4 @@
-package net.metadark.pong.shared.actors;
+package net.metadark.pong.core.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;

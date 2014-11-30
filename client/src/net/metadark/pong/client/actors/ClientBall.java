@@ -4,8 +4,8 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-import net.metadark.pong.shared.actors.Ball;
-import net.metadark.pong.shared.actors.Paddle;
+import net.metadark.pong.core.actors.Ball;
+import net.metadark.pong.core.actors.Paddle;
 
 public class ClientBall extends Ball {
 

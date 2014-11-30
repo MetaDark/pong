@@ -5,4 +5,5 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 
 eclipse.project {
     name = appName + "-client"
+    linkedResource name: 'assets', type: '2', location: 'PROJECT_LOC/assets'
 }

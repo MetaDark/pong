@@ -3,7 +3,7 @@ package net.metadark.pong.client.actors;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-import net.metadark.pong.shared.actors.Paddle;
+import net.metadark.pong.core.actors.Paddle;
 
 public class ClientPaddle extends Paddle {
 

@@ -9,11 +9,6 @@ import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 
 public class PongServer extends Thread {
-
-	/**
-	 * The default port to host on
-	 */
-	private static int DEFAULT_PORT = 5436;
 	
 	/**
 	 * The socket used to accept new clients
@@ -24,13 +19,6 @@ public class PongServer extends Thread {
 	 * A List of unmatched clients
 	 */
 	private ArrayList<ClientConnection> clients = new ArrayList<ClientConnection>();
-
-	/**
-	 * Create a new Pong server on the default port
-	 */
-	public PongServer() {
-		this(DEFAULT_PORT);
-	}
 
 	/**
 	 * Create a new Pong server on a specific port

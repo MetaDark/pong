@@ -4,7 +4,7 @@ import net.metadark.pong.client.PongClient;
 import net.metadark.pong.client.actors.ClientBall;
 import net.metadark.pong.client.actors.ClientPaddle;
 import net.metadark.pong.core.ClientInterface;
-import net.metadark.pong.shared.actors.Paddle.Side;
+import net.metadark.pong.core.actors.Paddle.Side;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
