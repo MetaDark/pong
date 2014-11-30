@@ -1,4 +1,4 @@
-package net.metadark.pong.shared;
+package net.metadark.pong.shared.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -36,22 +36,18 @@ public class Paddle extends Rectangle {
 	
 	/**
 	 * Toggle moving the paddle up
-	 * TODO: Send packet to server
-	 * 
 	 * @param t toggle
 	 */
-	public void moveUpPure(boolean toggle) {
+	public void moveUp(boolean toggle) {
 		moveUp = toggle;
 	}
 	
 	/**
 	 * Toggle moving the paddle down
-	 * TODO: Send packet to server
-	 * 
 	 * @param t
 	 */
 	
-	public void moveDownPure(boolean toggle) {
+	public void moveDown(boolean toggle) {
 		moveDown = toggle;
 	}
 	

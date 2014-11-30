@@ -1,9 +1,10 @@
 package net.metadark.pong.client.screens;
 
-import net.metadark.pong.client.ClientBall;
-import net.metadark.pong.client.ClientPaddle;
 import net.metadark.pong.client.PongClient;
-import net.metadark.pong.shared.Paddle.Side;
+import net.metadark.pong.client.actors.ClientBall;
+import net.metadark.pong.client.actors.ClientPaddle;
+import net.metadark.pong.core.ClientInterface;
+import net.metadark.pong.shared.actors.Paddle.Side;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -21,32 +22,34 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
-public class GameScreen extends PongScreen {
+public class GameScreen extends PongScreen implements ClientInterface {
 	
 	private OrthographicCamera camera;
 	private Music music;
 	private ShapeRenderer shapeRenderer;
 
+	private PongClient client;
+	
 	private ClientBall ball;
 	private ClientPaddle leftPaddle;
 	private ClientPaddle rightPaddle;
 	
-	String leftName = "MetaDark";
-	String rightName = "Kurt";
+	private String leftName = "MetaDark";
+	private String rightName = "Kurt";
 	
-	int leftScore = 20;
-	int rightScore = 0;
+	private int leftScore = 5;
+	private int rightScore = 0;
 	
 	private BitmapFont titleFont;
 	private SpriteBatch spriteBatch;
 
-	public GameScreen(Game game) {
+	public GameScreen(Game game, PongClient client) {
 		super(game);
-	}
-	
-	@Override
-	public void show() {
-
+		
+		// Make this game a client interface
+		this.client = client;
+		client.setClientInterface(this);
+		
 		// Setup the game camera
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
@@ -58,44 +61,23 @@ public class GameScreen extends PongScreen {
 		music.play();
 
 		Sound bounce = Gdx.audio.newSound(Gdx.files.internal("bounce.ogg"));
-
-		// Start the client
-		PongClient client = new PongClient(this);
 		
 		// Setup the shape render and the objects
 		shapeRenderer = new ShapeRenderer();
-		leftPaddle = new ClientPaddle(client, camera, Side.LEFT);
-		rightPaddle = new ClientPaddle(client, camera, Side.RIGHT);
+		leftPaddle = new ClientPaddle(camera, Side.LEFT);
+		rightPaddle = new ClientPaddle(camera, Side.RIGHT);
 		ball = new ClientBall(camera, leftPaddle, rightPaddle, bounce);
 
-		// Handle player input
+		// Bind keyboard events
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			@Override
 			public boolean keyDown(int keycode) {
-				switch (keycode) {
-				case Keys.UP:
-					leftPaddle.moveUp(true);
-					break;
-				case Keys.DOWN:
-					leftPaddle.moveDown(true);
-					break;
-				}
-				
-				return true;
+				return GameScreen.this.keyDown(keycode);
 			}
 			
 			@Override
 			public boolean keyUp(int keycode) {
-				switch (keycode) {
-				case Keys.UP:
-					leftPaddle.moveUp(false);
-					break;
-				case Keys.DOWN:
-					leftPaddle.moveDown(false);
-					break;
-				}
-				
-				return true;
+				return GameScreen.this.keyUp(keycode);
 			}
 		});
 		
@@ -103,8 +85,7 @@ public class GameScreen extends PongScreen {
 	    
 	    // Create sprite batch
 	    spriteBatch = new SpriteBatch();
-	    
-	}
+	} 
 	
 	@Override
 	public void render(float delta) {
@@ -141,7 +122,6 @@ public class GameScreen extends PongScreen {
 
 	}
 	
-	
 	private void renderFonts() {
 		FileHandle fontFile = Gdx.files.internal("LogoCraft.ttf");
 	    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
@@ -149,18 +129,53 @@ public class GameScreen extends PongScreen {
 	    titleFont = generator.generateFont(parameter);
 	    generator.dispose();
 	}
-	
-	
-	public ClientBall getBall() {
-		return ball;
-	}
 
-	public ClientPaddle getLeftPaddle() {
-		return leftPaddle;
+	/**
+	 * Handle keyboard events
+	 */
+	
+	public boolean keyDown(int keycode) {
+		switch (keycode) {
+		case Keys.UP:
+			client.moveUp(true);
+			leftPaddle.moveUp(true);
+			break;
+		case Keys.DOWN:
+			client.moveDown(true);
+			leftPaddle.moveDown(true);
+			break;
+		}
+		
+		return true;
 	}
-
-	public ClientPaddle getRightPaddle() {
-		return rightPaddle;
+	
+	public boolean keyUp(int keycode) {
+		switch (keycode) {
+		case Keys.UP:
+			client.moveUp(false);
+			leftPaddle.moveUp(false);
+			break;
+		case Keys.DOWN:
+			client.moveDown(false);
+			leftPaddle.moveDown(false);
+			break;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Handle messages from server
+	 */
+	
+	@Override
+	public void moveUp(boolean toggle) {
+		rightPaddle.moveUp(toggle);
+	}
+	
+	@Override
+	public void moveDown(boolean toggle) {
+		rightPaddle.moveDown(toggle);
 	}
 
 }

@@ -1,4 +1,4 @@
-package net.metadark.pong.shared;
+package net.metadark.pong.shared.actors;
 
 import java.util.Random;
 

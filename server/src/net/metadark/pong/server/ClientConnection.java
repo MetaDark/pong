@@ -4,17 +4,16 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import net.metadark.pong.core.ClientInterface;
+import net.metadark.pong.core.ServerInterface.ServerEvent;
+
 import com.badlogic.gdx.net.Socket;
 
-public class ClientConnection extends Thread {
+public class ClientConnection extends Thread implements ClientInterface {
 	
-	private static final int MOVE_UP = 0;
-	private static final int MOVE_DOWN = 1;
-	private static final int UPDATE_BALL = 2;
-	
-	PongServer server;
-	DataOutputStream output;
-	DataInputStream input;
+	private PongServer server;
+	private DataOutputStream output;
+	private DataInputStream input;
 	
 	private volatile boolean running;
 	
@@ -32,16 +31,13 @@ public class ClientConnection extends Thread {
 		
 		while (running) {
 			try {
-				int type = input.readInt();
+				ServerEvent type = ServerEvent.values()[input.readInt()];
 				switch (type) {
 				case MOVE_UP:
 					server.moveUp(this, input.readBoolean());
 					break;
 				case MOVE_DOWN:
 					server.moveDown(this, input.readBoolean());
-					break;
-				case UPDATE_BALL:
-					System.out.println("Do the ball thing");
 					break;
 				default:
 					System.out.println("Bad message");
@@ -66,31 +62,24 @@ public class ClientConnection extends Thread {
 		}
 	}
 	
+	@Override
 	public void moveUp(boolean toggle) {
 		try {
-			output.writeInt(MOVE_UP);
+			output.writeInt(ClientEvent.MOVE_UP.ordinal());
 			output.writeBoolean(toggle);
 		} catch (IOException e) {
 			close();
 		}
 	}
 	
+	@Override
 	public void moveDown(boolean toggle) {
 		try {
-			output.writeInt(MOVE_DOWN);
+			output.writeInt(ClientEvent.MOVE_DOWN.ordinal());
 			output.writeBoolean(toggle);
 		} catch (IOException e) {
 			close();
 		}
 	}
-	
-//	public void updateBall() {
-//		try {
-//			output.writeInt(MOVE_DOWN);
-//			output.writeBoolean(toggle);
-//		} catch (IOException e) {
-//			close();
-//		}
-//	}
 
 }

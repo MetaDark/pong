@@ -1,11 +1,11 @@
-package net.metadark.pong.client;
+package net.metadark.pong.client.actors;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-import net.metadark.pong.shared.Ball;
-import net.metadark.pong.shared.Paddle;
+import net.metadark.pong.shared.actors.Ball;
+import net.metadark.pong.shared.actors.Paddle;
 
 public class ClientBall extends Ball {
 

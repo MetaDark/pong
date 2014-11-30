@@ -4,39 +4,26 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import net.metadark.pong.client.screens.GameScreen;
+import net.metadark.pong.core.ClientInterface;
+import net.metadark.pong.core.ClientInterface.ClientEvent;
+import net.metadark.pong.core.ServerInterface;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 
-public class PongClient extends Thread {
-
-	private static String DEFAULT_HOST = "localhost";
-	private static int DEFAULT_PORT = 5436;
-
-	private static final int MOVE_UP = 0;
-	private static final int MOVE_DOWN = 1;
-	private static final int BALL = 2;
+public class PongClient extends Thread implements ServerInterface {
 	
-	private GameScreen game;
+	private ClientInterface client;
 	private DataOutputStream output;
 	private DataInputStream input;
 
 	private volatile boolean running;
 
-	public PongClient(GameScreen game) {
-		this(game, DEFAULT_HOST, DEFAULT_PORT);
-	}
-
-	public PongClient(GameScreen game, String host) {
-		this(game, host, DEFAULT_PORT);
-	}
-
-	public PongClient(GameScreen game, String host, int port) {
-		this.game = game;
-
+	public PongClient(ClientInterface client, String host, int port, String username) {
+		setClientInterface(client);
+		
 		SocketHints socketHint = new SocketHints();
 		socketHint.connectTimeout = 1000;
 
@@ -46,6 +33,10 @@ public class PongClient extends Thread {
 
 		start();
 	}
+	
+	public void setClientInterface(ClientInterface client) {
+		this.client = client;
+	}
 
 	@Override
 	public void run() {
@@ -53,16 +44,13 @@ public class PongClient extends Thread {
 
 		while (running) {
 			try {
-				int type = input.readInt();
+				ClientEvent type = ClientEvent.values()[input.readInt()];
 				switch (type) {
 				case MOVE_UP:
-					game.getRightPaddle().moveUpPure(input.readBoolean());
+					client.moveUp(input.readBoolean());
 					break;
 				case MOVE_DOWN:
-					game.getRightPaddle().moveDownPure(input.readBoolean());
-					break;
-				case BALL:
-					System.out.println("Do the ball thing");
+					client.moveDown(input.readBoolean());
 					break;
 				default:
 					System.out.println("Bad message");
@@ -84,18 +72,20 @@ public class PongClient extends Thread {
 		}
 	}
 
+	@Override
 	public void moveUp(boolean toggle) {
 		try {
-			output.writeInt(MOVE_UP);
+			output.writeInt(ServerEvent.MOVE_UP.ordinal());
 			output.writeBoolean(toggle);
 		} catch (IOException e) {
 			close();
 		}
 	}
 
+	@Override
 	public void moveDown(boolean toggle) {
 		try {
-			output.writeInt(MOVE_DOWN);
+			output.writeInt(ServerEvent.MOVE_DOWN.ordinal());
 			output.writeBoolean(toggle);
 		} catch (IOException e) {
 			close();
