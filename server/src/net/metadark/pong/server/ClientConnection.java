@@ -5,24 +5,31 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.metadark.pong.core.ClientInterface;
-import net.metadark.pong.core.ServerInterface.ServerEvent;
+import net.metadark.pong.server.ServerInterface.ServerEvent;
 
 import com.badlogic.gdx.net.Socket;
 
 public class ClientConnection extends Thread implements ClientInterface {
 	
-	private PongServer server;
+	private ServerInterface server;
 	private DataOutputStream output;
 	private DataInputStream input;
 	
+	private String username;
+	
 	private volatile boolean running;
 	
-	public ClientConnection(PongServer server, Socket socket) {
-		this.server = server;
+	public ClientConnection(ServerInterface server, Socket socket) {
+		setServerInterface(server);
+		
 		this.output = new DataOutputStream(socket.getOutputStream());
 		this.input = new DataInputStream(socket.getInputStream());
 		
 		start();
+	}
+	
+	public void setServerInterface(ServerInterface server) {
+		this.server = server;
 	}
 	
 	@Override
@@ -33,6 +40,9 @@ public class ClientConnection extends Thread implements ClientInterface {
 			try {
 				ServerEvent type = ServerEvent.values()[input.readInt()];
 				switch (type) {
+				case LOGIN:
+					username = input.readUTF();
+					break;
 				case MOVE_UP:
 					server.moveUp(this, input.readBoolean());
 					break;
@@ -53,7 +63,7 @@ public class ClientConnection extends Thread implements ClientInterface {
 	
 	public void close() {
 		running = false;
-		server.closeConnection(this);
+		server.close(this);
 		
 		try {
 			output.close();
@@ -77,6 +87,25 @@ public class ClientConnection extends Thread implements ClientInterface {
 		try {
 			output.writeInt(ClientEvent.MOVE_DOWN.ordinal());
 			output.writeBoolean(toggle);
+		} catch (IOException e) {
+			close();
+		}
+	}
+	
+	@Override
+	public void requestGame(String username) {
+		try {
+			output.writeInt(ClientEvent.MOVE_DOWN.ordinal());
+			output.writeUTF(username);
+		} catch (IOException e) {
+			close();
+		}
+	}
+
+	@Override
+	public void quitGame() {
+		try {
+			output.writeInt(ClientEvent.QUIT_GAME.ordinal());
 		} catch (IOException e) {
 			close();
 		}

@@ -11,7 +11,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -60,13 +59,13 @@ public class GameScreen extends PongScreen implements ClientInterface {
 		music.setVolume(0.3f);
 		music.play();
 
-		Sound bounce = Gdx.audio.newSound(Gdx.files.internal("bounce.ogg"));
+//		Sound bounce = Gdx.audio.newSound(Gdx.files.internal("bounce.ogg"));
 		
 		// Setup the shape render and the objects
 		shapeRenderer = new ShapeRenderer();
 		leftPaddle = new ClientPaddle(camera, Side.LEFT);
 		rightPaddle = new ClientPaddle(camera, Side.RIGHT);
-		ball = new ClientBall(camera, leftPaddle, rightPaddle, bounce);
+		ball = new ClientBall(camera, leftPaddle, rightPaddle);
 
 		// Bind keyboard events
 		Gdx.input.setInputProcessor(new InputAdapter() {
@@ -165,8 +164,12 @@ public class GameScreen extends PongScreen implements ClientInterface {
 	}
 	
 	/**
-	 * Handle messages from server
+	 * Handle messages from client
 	 */
+	
+	@Override
+	public void requestGame(String username) {
+	}
 	
 	@Override
 	public void moveUp(boolean toggle) {
@@ -176,6 +179,16 @@ public class GameScreen extends PongScreen implements ClientInterface {
 	@Override
 	public void moveDown(boolean toggle) {
 		rightPaddle.moveDown(toggle);
+	}
+
+	@Override
+	public void close() {
+		game.setScreen(new MainScreen(game));
+	}
+
+	@Override
+	public void quitGame() {
+		game.setScreen(new LobbyScreen(game, client));
 	}
 
 }

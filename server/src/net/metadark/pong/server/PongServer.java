@@ -1,14 +1,12 @@
 package net.metadark.pong.server;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 
-public class PongServer extends Thread {
+public class PongServer implements Runnable, ServerInterface {
 	
 	/**
 	 * The socket used to accept new clients
@@ -16,9 +14,9 @@ public class PongServer extends Thread {
 	private ServerSocket socket;
 
 	/**
-	 * A List of unmatched clients
+	 * A buffer for unmatched clients
 	 */
-	private ArrayList<ClientConnection> clients = new ArrayList<ClientConnection>();
+	private ClientConnection unmatchedClient;
 
 	/**
 	 * Create a new Pong server on a specific port
@@ -30,56 +28,44 @@ public class PongServer extends Thread {
 		
 		// Create the server socket
 		socket = Gdx.net.newServerSocket(Protocol.TCP, port, socketHint);
+		System.out.println("Running pong server on port " + port);
 		
 		// Start listening for new clients
-		start();
+		run();
 	}
 
 	/**
-	 * Wait to clients to connect to the server
+	 * Wait for clients to connect to the server
 	 */
 	@Override
 	public void run() {
 		while (true) {
 			Socket clientSocket = socket.accept(null);
 			System.out.println("Client connected: " + clientSocket.getRemoteAddress());
-
-			ClientConnection clientConnection = new ClientConnection(this, clientSocket);
-			clients.add(clientConnection);
+			addClient(new ClientConnection(this, clientSocket));
+		}
+	}
+	
+	private void addClient(ClientConnection client) {
+		if (unmatchedClient != null) {
+			new PongGame(this, unmatchedClient, client);
+			unmatchedClient = null;
+		} else {
+			unmatchedClient = client;
 		}
 	}
 
-	/**
-	 * Broadcast a paddle down message to all players
-	 * @param origin The client that moved
-	 * @param toggle Start/stop movement
-	 */
-	public void moveUp(ClientConnection origin, boolean toggle) {
-		for (ClientConnection client : clients) {
-			if (client != origin) {
-				client.moveUp(toggle);
-			}
+	@Override
+	public void moveUp(ClientConnection client, boolean toggle) {}
+
+	@Override
+	public void moveDown(ClientConnection client, boolean toggle) {}
+
+	@Override
+	public void close(ClientConnection client) {
+		if (unmatchedClient == client) {
+			unmatchedClient = null;
 		}
 	}
-
-	/**
-	 * Broadcast a paddle up message to all players
-	 * @param origin The client that moved
-	 * @param toggle Start/stop movement
-	 */
-	public void moveDown(ClientConnection origin, boolean toggle) {
-		for (ClientConnection client : clients) {
-			if (client != origin) {
-				client.moveDown(toggle);
-			}
-		}
-	}
-
-	/**
-	 * Remove a client from the connection list
-	 * @param clientConnection client to remove
-	 */
-	public void closeConnection(ClientConnection clientConnection) {
-		clients.remove(clientConnection);
-	}
+	
 }

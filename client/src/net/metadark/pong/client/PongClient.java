@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import net.metadark.pong.core.ClientInterface;
 import net.metadark.pong.core.ClientInterface.ClientEvent;
-import net.metadark.pong.core.ServerInterface;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.Protocol;
@@ -30,7 +29,9 @@ public class PongClient extends Thread implements ServerInterface {
 		Socket socket = Gdx.net.newClientSocket(Protocol.TCP, host, port, socketHint);
 		output = new DataOutputStream(socket.getOutputStream());
 		input = new DataInputStream(socket.getInputStream());
-
+		running = true;
+		
+		login(username);
 		start();
 	}
 	
@@ -40,8 +41,6 @@ public class PongClient extends Thread implements ServerInterface {
 
 	@Override
 	public void run() {
-		running = true;
-
 		while (running) {
 			try {
 				ClientEvent type = ClientEvent.values()[input.readInt()];
@@ -87,6 +86,16 @@ public class PongClient extends Thread implements ServerInterface {
 		try {
 			output.writeInt(ServerEvent.MOVE_DOWN.ordinal());
 			output.writeBoolean(toggle);
+		} catch (IOException e) {
+			close();
+		}
+	}
+
+	@Override
+	public void login(String username) {
+		try {
+			output.writeInt(ServerEvent.LOGIN.ordinal());
+			output.writeUTF(username);
 		} catch (IOException e) {
 			close();
 		}

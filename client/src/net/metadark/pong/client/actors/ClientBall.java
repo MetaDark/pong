@@ -1,6 +1,5 @@
 package net.metadark.pong.client.actors;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
@@ -11,8 +10,8 @@ public class ClientBall extends Ball {
 
 	private static final long serialVersionUID = 1L;
 
-	public ClientBall(Camera camera, Paddle leftPaddle, Paddle rightPaddle, Sound bounce) {
-		super(camera, leftPaddle, rightPaddle, bounce);
+	public ClientBall(Camera camera, Paddle leftPaddle, Paddle rightPaddle) {
+		super(camera, leftPaddle, rightPaddle);
 	}
 	
 	/**

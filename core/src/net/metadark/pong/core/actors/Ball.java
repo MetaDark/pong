@@ -3,7 +3,6 @@ package net.metadark.pong.core.actors;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -11,7 +10,6 @@ public class Ball extends Rectangle {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private Sound bounce;
 	private Random generator = new Random();
 	
 	private Camera camera;
@@ -21,12 +19,10 @@ public class Ball extends Rectangle {
 	private float velocityX;
 	private float velocityY;
 	
-	public Ball(Camera camera, Paddle leftPaddle, Paddle rightPaddle, Sound bounce) {
+	public Ball(Camera camera, Paddle leftPaddle, Paddle rightPaddle) {
 		this.camera = camera;
 		this.leftPaddle = leftPaddle;
 		this.rightPaddle = rightPaddle;
-		
-		this.bounce = bounce;
 		
 		center();
 		width = 10;
@@ -66,12 +62,10 @@ public class Ball extends Rectangle {
 			x = 2 * (leftPaddle.x + leftPaddle.width) - x;
 			velocityX = Math.abs(velocityX);
 			velocityY = ((y + height / 2) - (leftPaddle.y + leftPaddle.height / 2)) / (leftPaddle.height / 2);
-			bounce.play(0.3f);
 		} else if (overlaps(rightPaddle)) {
 			x = 2 * (rightPaddle.x - width) - x;
 			velocityX = -Math.abs(velocityX);
 			velocityY = ((y + height / 2) - (rightPaddle.y + rightPaddle.height / 2)) / (rightPaddle.height / 2);
-			bounce.play(0.3f);
 		}
 		
 		// Center ball after passing through left and right

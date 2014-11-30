@@ -1,7 +1,7 @@
 package net.metadark.pong.desktop.server;
 
-import net.metadark.pong.core.ServerInterface;
 import net.metadark.pong.server.Pong;
+import net.metadark.pong.server.ServerInterface;
 
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 

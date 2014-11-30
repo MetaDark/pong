@@ -19,6 +19,17 @@ public class LobbyScreen extends PongScreen implements ClientInterface {
 	
 	public LobbyScreen(Game game, String host, String port, String username) {
 		super(game);
+		this.client = new PongClient(this, host, Integer.parseInt(port), username);
+		init();
+	}
+	
+	public LobbyScreen(Game game, PongClient client) {
+		super(game);
+		this.client = client;
+		init();
+	}
+	
+	private void init() {
 		
 		// Setup the stage
 		stage = new Stage();
@@ -32,12 +43,10 @@ public class LobbyScreen extends PongScreen implements ClientInterface {
 		waitingLabel.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, center);
 		stage.addActor(waitingLabel);
 		
-		// Create a new pong client
-		client = new PongClient(this, host, Integer.parseInt(port), username);
-		
 		startTime = System.currentTimeMillis();
+		
 	}
-	
+
 	/**
 	 * Render loop
 	 * @param delta milliseconds since last render
@@ -59,11 +68,22 @@ public class LobbyScreen extends PongScreen implements ClientInterface {
 	 */
 	
 	@Override
-	public void moveUp(boolean toggle) {
-		System.out.println(toggle);
+	public void requestGame(String username) {
+		// TODO Auto-generated method stub
 	}
 	
 	@Override
+	public void moveUp(boolean toggle) {}
+	
+	@Override
 	public void moveDown(boolean toggle) {}
+
+	@Override
+	public void quitGame() {}
+
+	@Override
+	public void close() {
+		game.setScreen(new MainScreen(game));
+	}
 
 }
