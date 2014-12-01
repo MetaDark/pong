@@ -23,31 +23,35 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class GameScreen extends PongScreen implements ClientInterface {
 	
-	private OrthographicCamera camera;
-	private Music music;
-	private ShapeRenderer shapeRenderer;
-
 	private PongClient client;
+	protected GameState gameState;
 	
 	private ClientBall ball;
 	private ClientPaddle leftPaddle;
 	private ClientPaddle rightPaddle;
-	
-	private String leftName = "MetaDark";
-	private String rightName = "Kurt";
-	
-	private int leftScore = 5;
+	private String leftUsername;
+	private String rightUsername;
+	private int leftScore = 0;
 	private int rightScore = 0;
-	
+
+	private OrthographicCamera camera;
+	private Music music;
+	private ShapeRenderer shapeRenderer;
 	private BitmapFont titleFont;
 	private SpriteBatch spriteBatch;
-
-	public GameScreen(Game game, PongClient client) {
+	
+	public GameScreen(Game game, PongClient client, String leftUsername, String rightUsername) {
 		super(game);
 		
-		// Make this game a client interface
 		this.client = client;
+		this.leftUsername = leftUsername;
+		this.rightUsername = rightUsername;
+		
+		// Set this object as the client interface
 		client.setClientInterface(this);
+		
+		// Define the game state
+		gameState = GameState.GAME;
 		
 		// Setup the game camera
 		camera = new OrthographicCamera();
@@ -95,9 +99,9 @@ public class GameScreen extends PongScreen implements ClientInterface {
 		
 		spriteBatch.begin();
 		float height = camera.viewportHeight - 10;
-		titleFont.draw(spriteBatch, leftName, 10, height);
+		titleFont.draw(spriteBatch, leftUsername, 10, height);
 		titleFont.draw(spriteBatch, Integer.toString(leftScore), camera.viewportWidth / 2 - 30, height);
-		titleFont.draw(spriteBatch, rightName, camera.viewportWidth / 2 + 10, height);
+		titleFont.draw(spriteBatch, rightUsername, camera.viewportWidth / 2 + 10, height);
 		titleFont.draw(spriteBatch, Integer.toString(rightScore), camera.viewportWidth - 30, height);
 		spriteBatch.end();
 
@@ -118,7 +122,28 @@ public class GameScreen extends PongScreen implements ClientInterface {
 
 		// Stop drawing shapes
 		shapeRenderer.end();
+		
+		// Handle game state transitions
+		switch (gameState) {
+		case GAME:
+			break;
+		case LOBBY:
+			game.setScreen(new LobbyScreen(game, client));
+			break;
+		case MAIN:
+			game.setScreen(new MainScreen(game));
+			break;
+		}
 
+	}
+	
+	@Override
+	public void hide() {
+		music.stop();
+		music.dispose();
+		shapeRenderer.dispose();
+		titleFont.dispose();
+		spriteBatch.dispose();
 	}
 	
 	private void renderFonts() {
@@ -168,8 +193,7 @@ public class GameScreen extends PongScreen implements ClientInterface {
 	 */
 	
 	@Override
-	public void requestGame(String username) {
-	}
+	public void requestGame(String username) {}
 	
 	@Override
 	public void moveUp(boolean toggle) {
@@ -183,12 +207,12 @@ public class GameScreen extends PongScreen implements ClientInterface {
 
 	@Override
 	public void close() {
-		game.setScreen(new MainScreen(game));
+		gameState = GameState.MAIN;
 	}
 
 	@Override
 	public void quitGame() {
-		game.setScreen(new LobbyScreen(game, client));
+		gameState = GameState.LOBBY;
 	}
 
 }

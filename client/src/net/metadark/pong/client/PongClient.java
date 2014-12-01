@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.metadark.pong.core.ClientInterface;
+import net.metadark.pong.core.ServerInterface;
 import net.metadark.pong.core.ClientInterface.ClientEvent;
 
 import com.badlogic.gdx.Gdx;
@@ -17,10 +18,12 @@ public class PongClient extends Thread implements ServerInterface {
 	private ClientInterface client;
 	private DataOutputStream output;
 	private DataInputStream input;
-
+	private String username;
+	
 	private volatile boolean running;
 
 	public PongClient(ClientInterface client, String host, int port, String username) {
+		this.username = username;
 		setClientInterface(client);
 		
 		SocketHints socketHint = new SocketHints();
@@ -34,22 +37,28 @@ public class PongClient extends Thread implements ServerInterface {
 		login(username);
 		start();
 	}
-	
-	public void setClientInterface(ClientInterface client) {
-		this.client = client;
-	}
 
 	@Override
 	public void run() {
 		while (running) {
 			try {
-				ClientEvent type = ClientEvent.values()[input.readInt()];
+				int val = input.readInt();
+				ClientEvent type = ClientEvent.values()[val];
 				switch (type) {
+				case REQUEST_GAME:
+					client.requestGame(input.readUTF());
+					break;
 				case MOVE_UP:
 					client.moveUp(input.readBoolean());
 					break;
 				case MOVE_DOWN:
 					client.moveDown(input.readBoolean());
+					break;
+				case QUIT_GAME:
+					client.quitGame();
+					break;
+				case CLOSE:
+					client.close();
 					break;
 				default:
 					System.out.println("Bad message");
@@ -61,13 +70,26 @@ public class PongClient extends Thread implements ServerInterface {
 		}
 	}
 
-	public void close() {
-		running = false;
-
+	/**
+	 * Handle messages from server
+	 */
+	
+	@Override
+	public void login(String username) {
 		try {
-			output.close();
+			output.writeInt(ServerEvent.LOGIN.ordinal());
+			output.writeUTF(username);
 		} catch (IOException e) {
-			e.printStackTrace();
+			close();
+		}
+	}
+	
+	@Override
+	public void match() {
+		try {
+			output.writeInt(ServerEvent.MATCH.ordinal());
+		} catch (IOException e) {
+			close();
 		}
 	}
 
@@ -90,15 +112,26 @@ public class PongClient extends Thread implements ServerInterface {
 			close();
 		}
 	}
-
+	
 	@Override
-	public void login(String username) {
+	public void close() {
+		running = false;
+
 		try {
-			output.writeInt(ServerEvent.LOGIN.ordinal());
-			output.writeUTF(username);
+			output.close();
 		} catch (IOException e) {
-			close();
+			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Setters and getters
+	 */
+	public String getUsername() {
+		return username;
+	}
+	
+	public void setClientInterface(ClientInterface client) {
+		this.client = client;
+	}
 }

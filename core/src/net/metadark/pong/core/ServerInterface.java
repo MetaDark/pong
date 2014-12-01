@@ -1,4 +1,4 @@
-package net.metadark.pong.client;
+package net.metadark.pong.core;
 
 public abstract interface ServerInterface {
 	
@@ -6,11 +6,14 @@ public abstract interface ServerInterface {
 	
 	public enum ServerEvent {
 		LOGIN,
+		MATCH,
 		MOVE_UP,
-		MOVE_DOWN
+		MOVE_DOWN,
+		CLOSE
 	}
 
 	public void login(String username);
+	public void match();
 	public void moveUp(boolean toggle);
 	public void moveDown(boolean toggle);
 	public void close();

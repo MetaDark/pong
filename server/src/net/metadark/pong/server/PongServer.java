@@ -12,7 +12,7 @@ public class PongServer implements Runnable, ServerInterface {
 	 * The socket used to accept new clients
 	 */
 	private ServerSocket socket;
-
+	
 	/**
 	 * A buffer for unmatched clients
 	 */
@@ -42,11 +42,11 @@ public class PongServer implements Runnable, ServerInterface {
 		while (true) {
 			Socket clientSocket = socket.accept(null);
 			System.out.println("Client connected: " + clientSocket.getRemoteAddress());
-			addClient(new ClientConnection(this, clientSocket));
+			new ClientConnection(this, clientSocket);
 		}
 	}
 	
-	private void addClient(ClientConnection client) {
+	public void addUnmatchedClient(ClientConnection client) {
 		if (unmatchedClient != null) {
 			new PongGame(this, unmatchedClient, client);
 			unmatchedClient = null;
@@ -55,6 +55,15 @@ public class PongServer implements Runnable, ServerInterface {
 		}
 	}
 
+	/**
+	 * Handle messages from client
+	 */
+
+	@Override
+	public void match(ClientConnection client) {
+		addUnmatchedClient(client);
+	}
+	
 	@Override
 	public void moveUp(ClientConnection client, boolean toggle) {}
 

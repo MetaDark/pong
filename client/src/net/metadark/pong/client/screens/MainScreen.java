@@ -30,6 +30,10 @@ public class MainScreen extends PongScreen {
 	
 	public MainScreen(Game game) {
 		super(game);
+	}
+	
+	@Override
+	public void show() {
 		
 		// Setup the stage
 		stage = new Stage();
@@ -74,19 +78,7 @@ public class MainScreen extends PongScreen {
 		// Center table and add to stage
 		table.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		stage.addActor(table);
-	}
-	
-	/**
-	 * Starts game when connect button is clicked
-	 */
-	private void connectBtnClicked() {
-		LobbyScreen lobbyScreen = new LobbyScreen(game,
-			hostInput.getText(),
-			portInput.getText(),
-			nameInput.getText()
-		);
 		
-		game.setScreen(lobbyScreen);
 	}
 	
 	/**
@@ -105,8 +97,22 @@ public class MainScreen extends PongScreen {
 	 * Clean up
 	 */
 	@Override
-	public void dispose() {
+	public void hide() {
 		stage.dispose();
+	}
+	
+	/**
+	 * Starts game when connect button is clicked
+	 */
+	private void connectBtnClicked() {
+
+		LobbyScreen lobbyScreen = new LobbyScreen(game,
+			hostInput.getText(),
+			portInput.getText(),
+			nameInput.getText()
+		);
+		
+		game.setScreen(lobbyScreen);
 	}
 
 }

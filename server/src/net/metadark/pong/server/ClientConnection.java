@@ -5,7 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.metadark.pong.core.ClientInterface;
-import net.metadark.pong.server.ServerInterface.ServerEvent;
+import net.metadark.pong.core.ServerInterface.ServerEvent;
 
 import com.badlogic.gdx.net.Socket;
 
@@ -24,17 +24,13 @@ public class ClientConnection extends Thread implements ClientInterface {
 		
 		this.output = new DataOutputStream(socket.getOutputStream());
 		this.input = new DataInputStream(socket.getInputStream());
+		running = true;
 		
 		start();
 	}
 	
-	public void setServerInterface(ServerInterface server) {
-		this.server = server;
-	}
-	
 	@Override
 	public void run() {
-		running = true;
 		
 		while (running) {
 			try {
@@ -43,12 +39,17 @@ public class ClientConnection extends Thread implements ClientInterface {
 				case LOGIN:
 					username = input.readUTF();
 					break;
+				case MATCH:
+					server.match(this);
+					break;
 				case MOVE_UP:
 					server.moveUp(this, input.readBoolean());
 					break;
 				case MOVE_DOWN:
 					server.moveDown(this, input.readBoolean());
 					break;
+				case CLOSE:
+					server.close(this);
 				default:
 					System.out.println("Bad message");
 					break;
@@ -61,7 +62,10 @@ public class ClientConnection extends Thread implements ClientInterface {
 		System.out.println("Client connection closed");
 	}
 	
+	@Override
 	public void close() {
+		if (!running) return;
+		
 		running = false;
 		server.close(this);
 		
@@ -69,6 +73,16 @@ public class ClientConnection extends Thread implements ClientInterface {
 			output.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void requestGame(String username) {
+		try {
+			output.writeInt(ClientEvent.REQUEST_GAME.ordinal());
+			output.writeUTF(username);
+		} catch (IOException e) {
+			close();
 		}
 	}
 	
@@ -91,16 +105,6 @@ public class ClientConnection extends Thread implements ClientInterface {
 			close();
 		}
 	}
-	
-	@Override
-	public void requestGame(String username) {
-		try {
-			output.writeInt(ClientEvent.MOVE_DOWN.ordinal());
-			output.writeUTF(username);
-		} catch (IOException e) {
-			close();
-		}
-	}
 
 	@Override
 	public void quitGame() {
@@ -111,4 +115,15 @@ public class ClientConnection extends Thread implements ClientInterface {
 		}
 	}
 
+	/**
+	 * Setters and getters
+	 */
+	public void setServerInterface(ServerInterface server) {
+		this.server = server;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
 }

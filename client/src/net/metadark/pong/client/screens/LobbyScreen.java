@@ -12,24 +12,30 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class LobbyScreen extends PongScreen implements ClientInterface {
-
+	
 	Stage stage;
 	PongClient client;
-	long startTime;
+	
+	protected GameState gameState;
+	private String opponentUsername;
 	
 	public LobbyScreen(Game game, String host, String port, String username) {
 		super(game);
 		this.client = new PongClient(this, host, Integer.parseInt(port), username);
-		init();
+		this.gameState = GameState.LOBBY;
 	}
 	
 	public LobbyScreen(Game game, PongClient client) {
 		super(game);
 		this.client = client;
-		init();
+		this.gameState = GameState.LOBBY;
+		client.setClientInterface(this);
 	}
 	
-	private void init() {
+	@Override
+	public void show() {
+		
+		client.match();
 		
 		// Setup the stage
 		stage = new Stage();
@@ -42,8 +48,6 @@ public class LobbyScreen extends PongScreen implements ClientInterface {
 		Label waitingLabel = new Label("Waiting for another player...", skin);
 		waitingLabel.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, center);
 		stage.addActor(waitingLabel);
-		
-		startTime = System.currentTimeMillis();
 		
 	}
 
@@ -58,9 +62,22 @@ public class LobbyScreen extends PongScreen implements ClientInterface {
 		stage.act(delta);
 		stage.draw();
 		
-		if (System.currentTimeMillis() - startTime > 2000) {
-			game.setScreen(new GameScreen(game, client));
+		// Handle game state transitions
+		switch (gameState) {
+		case LOBBY:
+			break;
+		case GAME:
+			game.setScreen(new GameScreen(game, client, client.getUsername(), opponentUsername));
+			break;
+		case MAIN:
+			game.setScreen(new MainScreen(game));
+			break;
 		}
+	}
+	
+	@Override
+	public void hide() {
+		stage.dispose();
 	}
 
 	/**
@@ -69,7 +86,8 @@ public class LobbyScreen extends PongScreen implements ClientInterface {
 	
 	@Override
 	public void requestGame(String username) {
-		// TODO Auto-generated method stub
+		gameState = GameState.GAME;
+		opponentUsername = username;
 	}
 	
 	@Override
@@ -83,7 +101,7 @@ public class LobbyScreen extends PongScreen implements ClientInterface {
 
 	@Override
 	public void close() {
-		game.setScreen(new MainScreen(game));
+		gameState = GameState.MAIN;
 	}
 
 }

@@ -5,7 +5,13 @@ import com.badlogic.gdx.Screen;
 
 public abstract class PongScreen implements Screen {
 
-	Game game;
+	public enum GameState {
+		MAIN,
+		LOBBY,
+		GAME
+	}
+	
+	protected Game game;
 	
 	public PongScreen(Game game) {
 		this.game = game;
