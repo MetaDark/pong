@@ -38,6 +38,9 @@ public class PongClient extends Thread implements ServerInterface {
 		start();
 	}
 
+	/**
+	 * Parses and delegates server messages to the client interface
+	 */
 	@Override
 	public void run() {
 		while (running) {
@@ -71,7 +74,7 @@ public class PongClient extends Thread implements ServerInterface {
 	}
 
 	/**
-	 * Handle messages from server
+	 * Methods to send messages to the server
 	 */
 	
 	@Override

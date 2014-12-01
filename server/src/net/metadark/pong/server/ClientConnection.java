@@ -12,6 +12,8 @@ import com.badlogic.gdx.net.Socket;
 public class ClientConnection extends Thread implements ClientInterface {
 	
 	private ServerInterface server;
+	
+	private Socket socket;
 	private DataOutputStream output;
 	private DataInputStream input;
 	
@@ -20,15 +22,19 @@ public class ClientConnection extends Thread implements ClientInterface {
 	private volatile boolean running;
 	
 	public ClientConnection(ServerInterface server, Socket socket) {
+		this.socket = socket;
 		setServerInterface(server);
 		
-		this.output = new DataOutputStream(socket.getOutputStream());
-		this.input = new DataInputStream(socket.getInputStream());
+		output = new DataOutputStream(socket.getOutputStream());
+		input = new DataInputStream(socket.getInputStream());
 		running = true;
 		
 		start();
 	}
 	
+	/**
+	 * Delegate messages from client to the server interface
+	 */
 	@Override
 	public void run() {
 		
@@ -59,8 +65,12 @@ public class ClientConnection extends Thread implements ClientInterface {
 			}
 		}
 		
-		System.out.println("Client connection closed");
+		System.out.println("Client connection closed: " + socket.getRemoteAddress());
 	}
+	
+	/**
+	 * Methods to send messages to client
+	 */
 	
 	@Override
 	public void close() {
@@ -118,6 +128,7 @@ public class ClientConnection extends Thread implements ClientInterface {
 	/**
 	 * Setters and getters
 	 */
+	
 	public void setServerInterface(ServerInterface server) {
 		this.server = server;
 	}

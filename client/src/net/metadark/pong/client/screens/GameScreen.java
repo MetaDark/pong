@@ -52,6 +52,13 @@ public class GameScreen extends PongScreen implements ClientInterface {
 		
 		// Define the game state
 		gameState = GameState.GAME;
+	}
+	
+	/**
+	 * Initialization
+	 */
+	@Override
+	public void show() {
 		
 		// Setup the game camera
 		camera = new OrthographicCamera();
@@ -65,7 +72,7 @@ public class GameScreen extends PongScreen implements ClientInterface {
 
 //		Sound bounce = Gdx.audio.newSound(Gdx.files.internal("bounce.ogg"));
 		
-		// Setup the shape render and the objects
+		// Setup the shape render and the actors
 		shapeRenderer = new ShapeRenderer();
 		leftPaddle = new ClientPaddle(camera, Side.LEFT);
 		rightPaddle = new ClientPaddle(camera, Side.RIGHT);
@@ -88,8 +95,13 @@ public class GameScreen extends PongScreen implements ClientInterface {
 	    
 	    // Create sprite batch
 	    spriteBatch = new SpriteBatch();
-	} 
+	    
+	}
 	
+	
+	/**
+	 * Render loop
+	 */
 	@Override
 	public void render(float delta) {
 		
@@ -97,6 +109,7 @@ public class GameScreen extends PongScreen implements ClientInterface {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
+		// Draw usernames and scores
 		spriteBatch.begin();
 		float height = camera.viewportHeight - 10;
 		titleFont.draw(spriteBatch, leftUsername, 10, height);
@@ -137,6 +150,9 @@ public class GameScreen extends PongScreen implements ClientInterface {
 
 	}
 	
+	/**
+	 * Clean up
+	 */
 	@Override
 	public void hide() {
 		music.stop();

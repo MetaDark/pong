@@ -32,6 +32,10 @@ public class LobbyScreen extends PongScreen implements ClientInterface {
 		client.setClientInterface(this);
 	}
 	
+	/**
+	 * Initialization
+	 */
+	
 	@Override
 	public void show() {
 		

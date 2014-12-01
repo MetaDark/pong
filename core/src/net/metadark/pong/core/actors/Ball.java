@@ -69,7 +69,6 @@ public class Ball extends Rectangle {
 		}
 		
 		// Center ball after passing through left and right
-		// TODO: update score board when
 		if (x < 0 || x > camera.viewportWidth - width) {
 			center();
 			velocityX = -velocityX;

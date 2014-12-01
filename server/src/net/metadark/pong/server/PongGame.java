@@ -43,6 +43,9 @@ public class PongGame extends Thread implements ServerInterface {
 		start();
 	}
 	
+	/**
+	 * Check for collisions and update score boards
+	 */
 	@Override
 	public void run() {
 		running = true;
@@ -59,10 +62,17 @@ public class PongGame extends Thread implements ServerInterface {
 		}
 	}
 	
+	/**
+	 * Get the other client connection
+	 * @param client
+	 */
 	private ClientConnection otherClient(ClientConnection client) {
 		return client == leftClient ? rightClient : leftClient;
 	}
 	
+	/**
+	 * Get the paddle associated with a client connection
+	 */
 	private Paddle clientPaddle(ClientConnection client) {
 		return client == leftClient ? leftPaddle : rightPaddle;
 	}

@@ -32,6 +32,9 @@ public class MainScreen extends PongScreen {
 		super(game);
 	}
 	
+	/**
+	 * Initialization
+	 */
 	@Override
 	public void show() {
 		
@@ -102,7 +105,7 @@ public class MainScreen extends PongScreen {
 	}
 	
 	/**
-	 * Starts game when connect button is clicked
+	 * Connects to server when button is clicked
 	 */
 	private void connectBtnClicked() {
 

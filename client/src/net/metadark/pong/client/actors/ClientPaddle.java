@@ -13,6 +13,10 @@ public class ClientPaddle extends Paddle {
 		super(camera, side);
 	}
 	
+	/**
+	 * Draw the paddle
+	 * @param shapeRenderer
+	 */
 	public void render(ShapeRenderer shapeRenderer) {
 		update();
 		shapeRenderer.setColor(1, 1, 1, 1);
