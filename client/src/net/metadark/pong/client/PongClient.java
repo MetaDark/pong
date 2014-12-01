@@ -51,6 +51,12 @@ public class PongClient extends Thread implements ServerInterface {
 				case REQUEST_GAME:
 					client.requestGame(input.readUTF());
 					break;
+				case RESET_BALL:
+					client.resetBall(input.readFloat(), input.readFloat(), input.readFloat(), input.readFloat());
+					break;
+				case UPDATE_SCORE:
+					client.updateScore(input.readInt(), input.readInt());
+					break;
 				case MOVE_UP:
 					client.moveUp(input.readBoolean());
 					break;
@@ -91,6 +97,15 @@ public class PongClient extends Thread implements ServerInterface {
 	public void match() {
 		try {
 			output.writeInt(ServerEvent.MATCH.ordinal());
+		} catch (IOException e) {
+			close();
+		}
+	}
+	
+	@Override
+	public void acceptGame() {
+		try {
+			output.writeInt(ServerEvent.ACCEPT_GAME.ordinal());
 		} catch (IOException e) {
 			close();
 		}
@@ -137,4 +152,5 @@ public class PongClient extends Thread implements ServerInterface {
 	public void setClientInterface(ClientInterface client) {
 		this.client = client;
 	}
+	
 }

@@ -1,55 +1,55 @@
 package net.metadark.pong.core.actors;
 
-import java.util.Random;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Rectangle;
 
 public class Ball extends Rectangle {
 	
-	private static final long serialVersionUID = 1L;
+	public enum Side {
+		DEFAULT,
+		LEFT,
+		RIGHT
+	}
 	
-	private Random generator = new Random();
+	private static final long serialVersionUID = 1L;
 	
 	private Camera camera;
 	private Paddle leftPaddle;
 	private Paddle rightPaddle;
 	
-	private float velocityX;
-	private float velocityY;
+	private float xVelocity;
+	private float yVelocity;
 	
 	public Ball(Camera camera, Paddle leftPaddle, Paddle rightPaddle) {
 		this.camera = camera;
 		this.leftPaddle = leftPaddle;
 		this.rightPaddle = rightPaddle;
 		
-		center();
 		width = 10;
 		height = 10;
-		velocityX = -1;
-		velocityY = 0;
 	}
 	
-	public void update() {
-		updatePosition();
+	public void update(float delta) {
+		updatePosition(delta);
 		checkCollisions();
 	}
 	
 	/**
-	 * Center the ball on the viewport
+	 * Reset the ball position and velocity
 	 */
-	private void center() {
-		x = (camera.viewportWidth - width) / 2;
-		y = generator.nextFloat() * camera.viewportHeight;
+	public void reset(float x, float y, float xVelocity, float yVelocity) {
+		this.x = x;
+		this.y = y;
+		this.xVelocity = xVelocity;
+		this.yVelocity = yVelocity;
 	}
 	
 	/**
 	 * Move the ball to it's appropriate position
 	 */ 
-	private void updatePosition() {
-		x += velocityX * 400 * Gdx.graphics.getDeltaTime();
-		y += velocityY * 400 * Gdx.graphics.getDeltaTime();
+	private void updatePosition(float delta) {
+		x += xVelocity * 400 * delta;
+		y += yVelocity * 400 * delta;
 	}
 	
 	/**
@@ -60,28 +60,38 @@ public class Ball extends Rectangle {
 		// Handle collision with paddles
 		if (overlaps(leftPaddle)) {
 			x = 2 * (leftPaddle.x + leftPaddle.width) - x;
-			velocityX = Math.abs(velocityX);
-			velocityY = ((y + height / 2) - (leftPaddle.y + leftPaddle.height / 2)) / (leftPaddle.height / 2);
+			xVelocity = Math.abs(xVelocity);
+			yVelocity = ((y + height / 2) - (leftPaddle.y + leftPaddle.height / 2)) / (leftPaddle.height / 2);
 		} else if (overlaps(rightPaddle)) {
 			x = 2 * (rightPaddle.x - width) - x;
-			velocityX = -Math.abs(velocityX);
-			velocityY = ((y + height / 2) - (rightPaddle.y + rightPaddle.height / 2)) / (rightPaddle.height / 2);
-		}
-		
-		// Center ball after passing through left and right
-		if (x < 0 || x > camera.viewportWidth - width) {
-			center();
-			velocityX = -velocityX;
+			xVelocity = -Math.abs(xVelocity);
+			yVelocity = ((y + height / 2) - (rightPaddle.y + rightPaddle.height / 2)) / (rightPaddle.height / 2);
 		}
 		
 		// Bounce the ball of the top and bottom
 		if (y < 0) {
 			y = -y;
-			velocityY = -velocityY;
+			yVelocity = -yVelocity;
 		} else if (y > camera.viewportHeight - height) {
 			y = 2 * (camera.viewportHeight - height) - y;
-			velocityY = -velocityY;
+			yVelocity = -yVelocity;
 		}
+	}
+	
+	/**
+	 * Check if ball is past a "net"
+	 */
+	
+	public Side getSide() {
+		Side side = Side.DEFAULT;
+		
+		if (x < 0) {
+			side = Side.LEFT;
+		} else if(x > camera.viewportWidth - width) {
+			side = Side.RIGHT;
+		}
+		
+		return side;
 	}
 	
 }

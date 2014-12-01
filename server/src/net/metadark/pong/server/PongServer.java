@@ -6,7 +6,7 @@ import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 
-public class PongServer implements Runnable, ServerInterface {
+public class PongServer implements Runnable, BroadcastInterface {
 	
 	/**
 	 * The socket used to accept new clients
@@ -63,6 +63,15 @@ public class PongServer implements Runnable, ServerInterface {
 	public void match(ClientConnection client) {
 		addUnmatchedClient(client);
 	}
+	
+	@Override
+	public void acceptGame(ClientConnection client) {}
+	
+	@Override
+	public void resetBall(float x, float y, float xVelocity, float yVelocity) {}
+	
+	@Override
+	public void updateScore() {}
 	
 	@Override
 	public void moveUp(ClientConnection client, boolean toggle) {}

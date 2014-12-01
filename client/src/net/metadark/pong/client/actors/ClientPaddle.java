@@ -17,8 +17,8 @@ public class ClientPaddle extends Paddle {
 	 * Draw the paddle
 	 * @param shapeRenderer
 	 */
-	public void render(ShapeRenderer shapeRenderer) {
-		update();
+	public void render(ShapeRenderer shapeRenderer, float delta) {
+		update(delta);
 		shapeRenderer.setColor(1, 1, 1, 1);
 		shapeRenderer.rect(x, y, width, height);
 	}

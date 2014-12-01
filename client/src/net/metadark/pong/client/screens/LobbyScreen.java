@@ -1,6 +1,7 @@
 package net.metadark.pong.client.screens;
 
 import static com.badlogic.gdx.scenes.scene2d.utils.Align.*;
+
 import net.metadark.pong.client.PongClient;
 import net.metadark.pong.core.ClientInterface;
 
@@ -93,6 +94,12 @@ public class LobbyScreen extends PongScreen implements ClientInterface {
 		gameState = GameState.GAME;
 		opponentUsername = username;
 	}
+	
+	@Override
+	public void resetBall(float x, float y, float xVelocity, float yVelocity) {}
+	
+	@Override
+	public void updateScore(int leftScore, int rightScore) {}
 	
 	@Override
 	public void moveUp(boolean toggle) {}

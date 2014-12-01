@@ -11,7 +11,7 @@ import com.badlogic.gdx.net.Socket;
 
 public class ClientConnection extends Thread implements ClientInterface {
 	
-	private ServerInterface server;
+	private BroadcastInterface server;
 	
 	private Socket socket;
 	private DataOutputStream output;
@@ -21,7 +21,7 @@ public class ClientConnection extends Thread implements ClientInterface {
 	
 	private volatile boolean running;
 	
-	public ClientConnection(ServerInterface server, Socket socket) {
+	public ClientConnection(BroadcastInterface server, Socket socket) {
 		this.socket = socket;
 		setServerInterface(server);
 		
@@ -47,6 +47,9 @@ public class ClientConnection extends Thread implements ClientInterface {
 					break;
 				case MATCH:
 					server.match(this);
+					break;
+				case ACCEPT_GAME:
+					server.acceptGame(this);
 					break;
 				case MOVE_UP:
 					server.moveUp(this, input.readBoolean());
@@ -97,6 +100,30 @@ public class ClientConnection extends Thread implements ClientInterface {
 	}
 	
 	@Override
+	public void resetBall(float x, float y, float xVelocity, float yVelocity) {
+		try {
+			output.writeInt(ClientEvent.RESET_BALL.ordinal());
+			output.writeFloat(x);
+			output.writeFloat(y);
+			output.writeFloat(xVelocity);
+			output.writeFloat(yVelocity);
+		} catch (IOException e) {
+			close();
+		}
+	}
+	
+	@Override
+	public void updateScore(int leftScore, int rightScore) {
+		try {
+			output.writeInt(ClientEvent.UPDATE_SCORE.ordinal());
+			output.writeInt(leftScore);
+			output.writeInt(rightScore);
+		} catch (IOException e) {
+			close();
+		}
+	}
+	
+	@Override
 	public void moveUp(boolean toggle) {
 		try {
 			output.writeInt(ClientEvent.MOVE_UP.ordinal());
@@ -129,7 +156,7 @@ public class ClientConnection extends Thread implements ClientInterface {
 	 * Setters and getters
 	 */
 	
-	public void setServerInterface(ServerInterface server) {
+	public void setServerInterface(BroadcastInterface server) {
 		this.server = server;
 	}
 	

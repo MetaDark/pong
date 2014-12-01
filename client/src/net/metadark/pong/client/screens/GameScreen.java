@@ -29,10 +29,11 @@ public class GameScreen extends PongScreen implements ClientInterface {
 	private ClientBall ball;
 	private ClientPaddle leftPaddle;
 	private ClientPaddle rightPaddle;
+	
 	private String leftUsername;
 	private String rightUsername;
-	private int leftScore = 0;
-	private int rightScore = 0;
+	private int leftScore;
+	private int rightScore;
 
 	private OrthographicCamera camera;
 	private Music music;
@@ -47,7 +48,7 @@ public class GameScreen extends PongScreen implements ClientInterface {
 		this.leftUsername = leftUsername;
 		this.rightUsername = rightUsername;
 		
-		// Set this object as the client interface
+		// Set this object as the client interface and accept the game
 		client.setClientInterface(this);
 		
 		// Define the game state
@@ -96,6 +97,8 @@ public class GameScreen extends PongScreen implements ClientInterface {
 	    // Create sprite batch
 	    spriteBatch = new SpriteBatch();
 	    
+	    // Accept a new game
+	    client.acceptGame();
 	}
 	
 	
@@ -129,9 +132,9 @@ public class GameScreen extends PongScreen implements ClientInterface {
 		}
 
 		// Draw ball and paddles
-		ball.render(shapeRenderer);
-		leftPaddle.render(shapeRenderer);
-		rightPaddle.render(shapeRenderer);
+		ball.render(shapeRenderer, delta);
+		leftPaddle.render(shapeRenderer, delta);
+		rightPaddle.render(shapeRenderer, delta);
 
 		// Stop drawing shapes
 		shapeRenderer.end();
@@ -210,6 +213,17 @@ public class GameScreen extends PongScreen implements ClientInterface {
 	
 	@Override
 	public void requestGame(String username) {}
+	
+	@Override
+	public void resetBall(float x, float y, float xVelocity, float yVelocity) {
+		ball.reset(x, y, xVelocity, yVelocity);
+	}
+	
+	@Override
+	public void updateScore(int leftScore, int rightScore) {
+		this.leftScore = leftScore;
+		this.rightScore = rightScore;
+	}
 	
 	@Override
 	public void moveUp(boolean toggle) {

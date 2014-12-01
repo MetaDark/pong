@@ -1,6 +1,5 @@
 package net.metadark.pong.core.actors;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -51,20 +50,20 @@ public class Paddle extends Rectangle {
 		moveDown = toggle;
 	}
 	
-	public void update() {
-		updatePosition();
+	public void update(float delta) {
+		updatePosition(delta);
 	}
 	
 	/**
 	 * Move the paddle to it's appropriate position
 	 */
-	private void updatePosition() {
+	private void updatePosition(float delta) {
 		if (moveUp) {
-			y += speed * 600 * Gdx.graphics.getDeltaTime();
+			y += speed * 600 * delta;
 		}
 		
 		if (moveDown) {
-			y -= speed * 600 * Gdx.graphics.getDeltaTime();
+			y -= speed * 600 * delta;
 		}
 		
 		// Bound the paddle to the camera viewport
