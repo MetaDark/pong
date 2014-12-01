@@ -180,11 +180,11 @@ public class GameScreen extends PongScreen implements ClientInterface {
 	public boolean keyDown(int keycode) {
 		switch (keycode) {
 		case Keys.UP:
-			client.moveUp(true);
+			client.moveUp(leftPaddle.y, true);
 			leftPaddle.moveUp(true);
 			break;
 		case Keys.DOWN:
-			client.moveDown(true);
+			client.moveDown(leftPaddle.y, true);
 			leftPaddle.moveDown(true);
 			break;
 		}
@@ -195,11 +195,11 @@ public class GameScreen extends PongScreen implements ClientInterface {
 	public boolean keyUp(int keycode) {
 		switch (keycode) {
 		case Keys.UP:
-			client.moveUp(false);
+			client.moveUp(leftPaddle.y, false);
 			leftPaddle.moveUp(false);
 			break;
 		case Keys.DOWN:
-			client.moveDown(false);
+			client.moveDown(leftPaddle.y, false);
 			leftPaddle.moveDown(false);
 			break;
 		}
@@ -226,12 +226,14 @@ public class GameScreen extends PongScreen implements ClientInterface {
 	}
 	
 	@Override
-	public void moveUp(boolean toggle) {
+	public void moveUp(float y, boolean toggle) {
+		rightPaddle.y = y;
 		rightPaddle.moveUp(toggle);
 	}
 	
 	@Override
-	public void moveDown(boolean toggle) {
+	public void moveDown(float y, boolean toggle) {
+		rightPaddle.y = y;
 		rightPaddle.moveDown(toggle);
 	}
 

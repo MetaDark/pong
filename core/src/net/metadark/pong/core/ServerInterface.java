@@ -21,7 +21,7 @@ public abstract interface ServerInterface {
 	public void login(String username);
 	public void match();
 	public void acceptGame();
-	public void moveUp(boolean toggle);
-	public void moveDown(boolean toggle);
+	public void moveUp(float y, boolean toggle);
+	public void moveDown(float y, boolean toggle);
 	public void close();
 }

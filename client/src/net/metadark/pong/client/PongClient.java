@@ -58,10 +58,10 @@ public class PongClient extends Thread implements ServerInterface {
 					client.updateScore(input.readInt(), input.readInt());
 					break;
 				case MOVE_UP:
-					client.moveUp(input.readBoolean());
+					client.moveUp(input.readFloat(), input.readBoolean());
 					break;
 				case MOVE_DOWN:
-					client.moveDown(input.readBoolean());
+					client.moveDown(input.readFloat(), input.readBoolean());
 					break;
 				case QUIT_GAME:
 					client.quitGame();
@@ -112,9 +112,10 @@ public class PongClient extends Thread implements ServerInterface {
 	}
 
 	@Override
-	public void moveUp(boolean toggle) {
+	public void moveUp(float y, boolean toggle) {
 		try {
 			output.writeInt(ServerEvent.MOVE_UP.ordinal());
+			output.writeFloat(y);
 			output.writeBoolean(toggle);
 		} catch (IOException e) {
 			close();
@@ -122,9 +123,10 @@ public class PongClient extends Thread implements ServerInterface {
 	}
 
 	@Override
-	public void moveDown(boolean toggle) {
+	public void moveDown(float y, boolean toggle) {
 		try {
 			output.writeInt(ServerEvent.MOVE_DOWN.ordinal());
+			output.writeFloat(y);
 			output.writeBoolean(toggle);
 		} catch (IOException e) {
 			close();

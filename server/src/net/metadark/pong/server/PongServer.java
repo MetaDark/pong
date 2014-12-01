@@ -74,10 +74,10 @@ public class PongServer implements Runnable, BroadcastInterface {
 	public void updateScore() {}
 	
 	@Override
-	public void moveUp(ClientConnection client, boolean toggle) {}
+	public void moveUp(ClientConnection client, float y, boolean toggle) {}
 
 	@Override
-	public void moveDown(ClientConnection client, boolean toggle) {}
+	public void moveDown(ClientConnection client, float y, boolean toggle) {}
 
 	@Override
 	public void close(ClientConnection client) {

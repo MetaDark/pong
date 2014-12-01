@@ -161,17 +161,19 @@ public class PongGame extends Thread implements BroadcastInterface {
 	}
 	
 	@Override
-	public void moveUp(ClientConnection client, boolean toggle) {
-		System.out.println("Do the paddle move");
-		clientPaddle(client).moveUp(toggle);
-		otherClient(client).moveUp(toggle);
+	public void moveUp(ClientConnection client, float y, boolean toggle) {
+		Paddle paddle = clientPaddle(client);
+		paddle.y = y;
+		paddle.moveUp(toggle);
+		otherClient(client).moveUp(y, toggle);
 	}
 
 	@Override
-	public void moveDown(ClientConnection client, boolean toggle) {
-		System.out.println("Do the paddle move");
-		clientPaddle(client).moveDown(toggle);
-		otherClient(client).moveDown(toggle);
+	public void moveDown(ClientConnection client, float y, boolean toggle) {
+		Paddle paddle = clientPaddle(client);
+		paddle.y = y;
+		paddle.moveDown(toggle);
+		otherClient(client).moveDown(y, toggle);
 	}
 
 	@Override

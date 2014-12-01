@@ -19,8 +19,8 @@ public abstract interface ClientInterface {
 	public void requestGame(String username);
 	public void resetBall(float x, float y, float xVelocity, float yVelocity);
 	public void updateScore(int leftScore, int rightScore);
-	public void moveUp(boolean toggle);
-	public void moveDown(boolean toggle);
+	public void moveUp(float y, boolean toggle);
+	public void moveDown(float y, boolean toggle);
 	public void quitGame();
 	public void close();
 }

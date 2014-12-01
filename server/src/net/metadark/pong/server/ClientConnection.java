@@ -52,10 +52,10 @@ public class ClientConnection extends Thread implements ClientInterface {
 					server.acceptGame(this);
 					break;
 				case MOVE_UP:
-					server.moveUp(this, input.readBoolean());
+					server.moveUp(this, input.readFloat(), input.readBoolean());
 					break;
 				case MOVE_DOWN:
-					server.moveDown(this, input.readBoolean());
+					server.moveDown(this, input.readFloat(), input.readBoolean());
 					break;
 				case CLOSE:
 					server.close(this);
@@ -124,9 +124,10 @@ public class ClientConnection extends Thread implements ClientInterface {
 	}
 	
 	@Override
-	public void moveUp(boolean toggle) {
+	public void moveUp(float y, boolean toggle) {
 		try {
 			output.writeInt(ClientEvent.MOVE_UP.ordinal());
+			output.writeFloat(y);
 			output.writeBoolean(toggle);
 		} catch (IOException e) {
 			close();
@@ -134,9 +135,10 @@ public class ClientConnection extends Thread implements ClientInterface {
 	}
 	
 	@Override
-	public void moveDown(boolean toggle) {
+	public void moveDown(float y, boolean toggle) {
 		try {
 			output.writeInt(ClientEvent.MOVE_DOWN.ordinal());
+			output.writeFloat(y);
 			output.writeBoolean(toggle);
 		} catch (IOException e) {
 			close();

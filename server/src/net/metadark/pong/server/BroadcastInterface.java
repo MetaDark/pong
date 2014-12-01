@@ -10,7 +10,7 @@ public abstract interface BroadcastInterface {
 	public void resetBall(float x, float y, float xVelocity, float yVelocity);
 	public void updateScore();
 	public void acceptGame(ClientConnection client);
-	public void moveUp(ClientConnection client, boolean toggle);
-	public void moveDown(ClientConnection client, boolean toggle);
+	public void moveUp(ClientConnection client, float y, boolean toggle);
+	public void moveDown(ClientConnection client, float y, boolean toggle);
 	public void close(ClientConnection client);
 }

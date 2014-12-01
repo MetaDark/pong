@@ -102,10 +102,10 @@ public class LobbyScreen extends PongScreen implements ClientInterface {
 	public void updateScore(int leftScore, int rightScore) {}
 	
 	@Override
-	public void moveUp(boolean toggle) {}
+	public void moveUp(float y, boolean toggle) {}
 	
 	@Override
-	public void moveDown(boolean toggle) {}
+	public void moveDown(float y, boolean toggle) {}
 
 	@Override
 	public void quitGame() {}
