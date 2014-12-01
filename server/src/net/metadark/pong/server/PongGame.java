@@ -32,6 +32,7 @@ public class PongGame extends Thread implements BroadcastInterface {
 		this.leftClient = leftClient;
 		this.rightClient = rightClient;
 		
+		// Send a request to the players to start the game
 		leftClient.requestGame(rightClient.getUsername());
 		rightClient.requestGame(leftClient.getUsername());
 		
@@ -50,34 +51,41 @@ public class PongGame extends Thread implements BroadcastInterface {
 	
 	/**
 	 * Check for collisions and update score boards
+	 * TODO: Refactor this method, it's ugly and inefficient
 	 */
 	@Override
 	public void run() {
 		running = true;
 		
-		// Get the center coordinates
+		// Calculate the center ball coordinates
 		float x = (camera.viewportWidth - ball.width) / 2;
 		float y = (camera.viewportHeight - ball.height) / 2;
 		
+		// Send the ball to the left
 		ball.reset(x, y, -1, 0);
 		resetBall(x, y, -1, 0);
 		
 		while (running) {
+			
+			// Update actor positions
 			leftPaddle.update(0.02f);
 			rightPaddle.update(0.02f);
 			ball.update(0.02f);
 			
+			// Handle ball passing through "net"
 			switch(ball.getSide()) {
 			case LEFT:
 				rightScore++;
 				updateScore();
 				
+				// Wait a second before repositioning the ball
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 				
+				// Send ball to the right
 				ball.reset(x, y, 1, 0);
 				resetBall(x, y, 1, 0);
 				break;
@@ -85,12 +93,14 @@ public class PongGame extends Thread implements BroadcastInterface {
 				leftScore++;
 				updateScore();
 				
+				// Wait a second before repositioning the ball
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 				
+				// Send ball to the left
 				ball.reset(x, y, -1, 0);
 				resetBall(x, y, -1, 0);
 				break;
@@ -98,6 +108,7 @@ public class PongGame extends Thread implements BroadcastInterface {
 				break;
 			}
 			
+			// Wait 20 milliseconds before updating again
 			try {
 				Thread.sleep(20);
 			} catch (InterruptedException e) {
@@ -136,7 +147,7 @@ public class PongGame extends Thread implements BroadcastInterface {
 			rightAccepted = true;
 		}
 		
-		// Start the game once both players accepts
+		// Start the game once both players accept
 		if (leftAccepted && rightAccepted) {
 			System.out.println(
 				"Starting game between " +
