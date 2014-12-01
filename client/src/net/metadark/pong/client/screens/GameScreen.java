@@ -70,8 +70,6 @@ public class GameScreen extends PongScreen implements ClientInterface {
 		music.setLooping(true);
 		music.setVolume(0.3f);
 		music.play();
-
-//		Sound bounce = Gdx.audio.newSound(Gdx.files.internal("bounce.ogg"));
 		
 		// Setup the shape render and the actors
 		shapeRenderer = new ShapeRenderer();

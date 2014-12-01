@@ -62,21 +62,30 @@ public class Ball extends Rectangle {
 			x = 2 * (leftPaddle.x + leftPaddle.width) - x;
 			xVelocity = Math.abs(xVelocity);
 			yVelocity = ((y + height / 2) - (leftPaddle.y + leftPaddle.height / 2)) / (leftPaddle.height / 2);
+			onCollision();
 		} else if (overlaps(rightPaddle)) {
 			x = 2 * (rightPaddle.x - width) - x;
 			xVelocity = -Math.abs(xVelocity);
 			yVelocity = ((y + height / 2) - (rightPaddle.y + rightPaddle.height / 2)) / (rightPaddle.height / 2);
+			onCollision();
 		}
 		
 		// Bounce the ball of the top and bottom
 		if (y < 0) {
 			y = -y;
 			yVelocity = -yVelocity;
+			onCollision();
 		} else if (y > camera.viewportHeight - height) {
 			y = 2 * (camera.viewportHeight - height) - y;
 			yVelocity = -yVelocity;
+			onCollision();
 		}
 	}
+	
+	/**
+	 * Collision event handler
+	 */
+	protected void onCollision() {}
 	
 	/**
 	 * Check if ball is past a "net"
